@@ -7,8 +7,8 @@
     tools:context="com.example.k1967.basicuicontrols.MainActivity">
 
    <RadioGroup
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
+       android:layout_width="162dp"
+       android:layout_height="206dp"
        android:id="@+id/myNiceRadioGroup"
        >
        <RadioButton
@@ -52,16 +52,8 @@
     android:layout_height="wrap_content"
     app:layout_constraintTop_toBottomOf="@id/myNiceRadioGroup"
     android:id="@+id/newButton"
-    android:text="@string/Select" />
+    android:text="@string/Select"
+    android:onClick="selectButtonClicked"
+    />
 
-<TextView
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        app:layout_constraintTop_toBottomOf="@id/newButton"
-        android:id="@+id/resultText"
-        android:background="@color/black"
-        android:text="hello"
-        android:textColor="@color/white"
-        android:textAlignment="center"
-/>
 </android.support.constraint.ConstraintLayout>
