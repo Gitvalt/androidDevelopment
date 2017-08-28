@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">BasicUIControls</string>
+    <string name="radio_option_1">Meatballs</string>
+    <string name="radio_option_2">Chicken</string>
+    <string name="radio_option_3">Fish</string>
+    <string name="radio_option_4">Steak</string>
+    <string name="radio_option_5">Carrots</string>
+    <string name="Select">Select</string>
 </resources>
