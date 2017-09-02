@@ -37,5 +37,6 @@
         android:text="Back"
         android:id="@+id/button"
         android:layout_below="@+id/textView3"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="backButtonPressed"/>
 </RelativeLayout>
