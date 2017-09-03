@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Dialogs Example</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="dialog_exit">Are you sure you want to exit?</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_title">Exit</string>
+    <string name="listdialog_title">Select a message type</string>
+    <string name="dialog_teamname">Team name:</string>
+
+    <string-array name="messagetypes">
+        <item>Call</item>
+        <item>SMS</item>
+        <item>Email</item>
+    </string-array>
+</resources>

@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Notifications Example</string>
+    <string name="public_text">This is a public text.</string>
+    <string name="private_text">This is a private text.</string>
+    <string name="secret_text">This is a secret text.</string>
+</resources>
