@@ -1,5 +1,6 @@
 package com.androidprogramming.k1967.dialogandnotification;
 
+import android.app.DialogFragment;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -11,8 +12,7 @@ import android.widget.Toast;
 
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements customDialog.CustomDialogListener {
 
     int notification_id = 1;
 
@@ -20,16 +20,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //(Button)notf_Button = (Button)findViewById(R.id.notificationButton);
-
     }
 
+    //when "get dialog" button is clicked
     public void DialogClick(View view){
+        /*
         ExitDialogFrag fraf = new ExitDialogFrag();
         fraf.show(getFragmentManager(), "exit");
+        */
+
+        customDialog dialog = new customDialog();
+        dialog.show(getFragmentManager(), "idnk");
     }
 
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, Boolean response) {
+        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog, Boolean response) {
+        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    //handle creating a new notification
     public void createNotification(int visibility, String text){
 
         String channelID = "my_channel_1";
@@ -57,10 +71,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //when "get notification" button is clicked
     public void notfClick(View view){
         createNotification(Notification.VISIBILITY_PUBLIC, "moi!");
     }
 
+    //when "get Toast" button is clicked
     public void ToastClick(View view){
 
         Random rand = new Random();
