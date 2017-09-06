@@ -16,28 +16,23 @@ import android.widget.Button;
 
 public class customDialog extends DialogFragment {
 
-    public interface CustomDialogListener{
-        public void onDialogPositiveClick(DialogFragment dialog, Boolean response);
-        public void onDialogNegativeClick(DialogFragment dialog, Boolean response);
+    //interfaces that allow dialog to communicate with the parent Activity
+    public interface CustomDialogListener {
+        void onDialogPositiveClick(boolean response);
+        void onDialogNegativeClick(boolean response);
     }
 
+    //the listener object
     CustomDialogListener mListener;
 
-    //check if the activity this is connected to is a correct type
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-        try {
-
-        } catch (ClassCastException e){
-
-        }
-
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -47,24 +42,21 @@ public class customDialog extends DialogFragment {
         Button ok = (Button)dialogView.findViewById(R.id.yes);
         Button no = (Button)dialogView.findViewById(R.id.no);
 
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onDialogPositiveClick(customDialog.this, true);
-            }
-        });
+        mListener = (CustomDialogListener)getActivity();
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onDialogPositiveClick(customDialog.this, true);
+                mListener.onDialogPositiveClick(true);
+                getDialog().dismiss();
             }
         });
 
         no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onDialogNegativeClick(customDialog.this, false);
+                mListener.onDialogNegativeClick(false);
+                getDialog().dismiss();
             }
         });
 

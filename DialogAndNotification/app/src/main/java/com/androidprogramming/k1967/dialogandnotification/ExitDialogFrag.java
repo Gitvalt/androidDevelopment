@@ -18,8 +18,8 @@ public class ExitDialogFrag extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Title")
-                .setMessage("VOI P****'")
+        builder.setTitle("Lorem ipsum")
+                .setMessage("Tämä on tosi tärkeä varoitus")
                 .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(getActivity(), "ok", Toast.LENGTH_SHORT).show();
@@ -27,7 +27,7 @@ public class ExitDialogFrag extends DialogFragment {
                 })
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getActivity(), ":(", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "ok", Toast.LENGTH_SHORT).show();
                     }
                 });
         return builder.create();

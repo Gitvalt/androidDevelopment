@@ -3,4 +3,6 @@
     <string name="toast_Button">Press here for nice \"Toast\"</string>
     <string name="dialogButton">Hello dialog</string>
     <string name="notification_Button">Notification popup</string>
+    <string name="agree">I agree</string>
+    <string name="disagree">I Disagree</string>
 </resources>
