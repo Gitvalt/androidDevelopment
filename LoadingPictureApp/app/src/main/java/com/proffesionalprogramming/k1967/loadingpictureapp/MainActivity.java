@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -24,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private ProgressBar progressBar;
 
-    private final String PATH = "http://domain.fi/android";
-    private String[] images = {"image1.jpg", "image2.jpg", "image3.jpg"};
+    private final String PATH = "http://student.labranet.jamk.fi/~K1967/web-ohjelmointi/harjoitus2/tehtava4/img/";
+    private String[] images = {"kuva1.png", "kuva2.jpg", "kuva3.jpg"};
     private int imageIndex;
 
     private DownloadImageTask task;
@@ -51,6 +52,42 @@ public class MainActivity extends AppCompatActivity {
     public void showImage(){
         task = new DownloadImageTask();
         task.execute(PATH + images[imageIndex]);
+    }
+
+    public boolean onTouchEvent(MotionEvent event){
+        switch (event.getAction()){
+
+            //finger is pressed to the screen
+            case MotionEvent.ACTION_DOWN:
+                //save the x-coordinate of the place
+                x1 = event.getX();
+                break;
+
+            //finger is lifted from the screen
+            case MotionEvent.ACTION_UP:
+                //get the screen location
+                x2 = event.getX();
+
+                //if the first place touched was smaller (on the left side) of the last spot
+                if(x1 < x2)
+                {
+                    //swiping from left to right => show previous picture
+                    imageIndex--;
+                    //if image was the first in the array, then show the last picture
+                    if(imageIndex < 0) imageIndex = images.length - 1;
+                }
+                else
+                {
+                    //swiping from right to left => show the next picture
+                    imageIndex++;
+
+                    //if the current image was last of the array then show the first of array
+                    if(imageIndex > (images.length - 1)) imageIndex = 0;
+                }
+                showImage();
+                break;
+        }
+        return false;
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

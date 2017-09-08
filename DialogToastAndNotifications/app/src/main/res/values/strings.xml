@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">DialogToastAndNotifications</string>
+    <string name="confirmButton">Confirm selection</string>
+</resources>

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SavingAndRestoringState</string>
+    <string name="change_text">change text</string>
+</resources>
