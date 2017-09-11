@@ -49,7 +49,7 @@ public class productList extends ArrayAdapter<Product> {
 
         itemView.setText(prod.getName());
         quantityView.setText(Integer.toString(prod.getQuantity()));
-        priceView.setText((Double.toString(priceCheck)));
+        priceView.setText("$" + String.format("%.2f", priceCheck));
 
         return rowView;
     }

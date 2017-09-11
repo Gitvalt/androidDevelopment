@@ -2,6 +2,7 @@ package company.supernice.k1967.shoppinglistapp;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -11,8 +12,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private final String DataTable = "phoneStore";
-    private static final String DataBaseName = "NiceData";
+    public final String DataTable = "phoneStore";
+    public static final String DataBaseName = "NiceData";
     private SQLiteDatabase db;
 
     public DatabaseHelper(Context context) {
@@ -32,20 +33,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void InsertProduct(Product product){
-
-        ContentValues values = new ContentValues();
-
-        //setup the values to be inserted
-        values.put("Name", product.getName());
-        values.put("Quantity", product.getQuantity());
-        values.put("Price", product.getPrice());
-
-        //execute insert
-        db.insert(DataTable, null, values);
-    }
-
-    public Product[] getProducts(){
-        db.query(DataTable, "_id",)
-    }
 }
