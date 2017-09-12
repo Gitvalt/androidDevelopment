@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/toast_msg"
+        android:orderInCategory="101"
+        android:title="Toast tester"
+        />
+    <item
+        android:id="@+id/notification_msg"
+        android:orderInCategory="102"
+        android:title="Notification test"
+        />
+    <item
+        android:id="@+id/customDialog_msg"
+        android:orderInCategory="103"
+        android:title="Custom dialog"
+        />
+</menu>
