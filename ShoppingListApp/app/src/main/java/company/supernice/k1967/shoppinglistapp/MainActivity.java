@@ -1,7 +1,11 @@
 package company.supernice.k1967.shoppinglistapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
+import android.app.DialogFragment;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -29,6 +33,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //load the listview
+        loadListview();
+
+        //if the datatable contains no products and the application is just started --> create dummy data
+        if(getProducts(sqlTable).size() <= 0){
+
+            //clear table
+            db.delete(sqlTable, null, null);
+
+            //write dummy data to database
+            writeData();
+
+            //reload the listview
+            loadListview();
+        }
+    }
+
+    //loads the products from Database
+    public void loadListview(){
         listView = (ListView)findViewById(R.id.contentList);
 
         /*
@@ -47,22 +70,13 @@ public class MainActivity extends AppCompatActivity {
         //fetch the table name
         sqlTable = helper.DataTable;
 
-        //if the datatable contains no products --> insert dummy data
-        if(getProducts(helper.DataTable).size() <= 0){
-
-            //clear table
-            db.delete(helper.DataTable, null, null);
-
-            //write dummydata
-            writeData();
-        }
-
         //read products from the database
-        List<Product> products = getProducts(helper.DataTable);
+        final List<Product> products = getProducts(sqlTable);
 
         final ArrayList<Product> prod_List = new ArrayList<Product>();
 
         int prodSize = products.size();
+
         for(int i = 0; i < prodSize; i++){
             prod_List.add(products.get(i));
         }
@@ -78,23 +92,65 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //list item is pressed for longer duration
+
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), "Hello long clicker", Toast.LENGTH_SHORT).show();
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                Toast.makeText(getApplicationContext(), "Hello long clicker " + position, Toast.LENGTH_SHORT).show();
+
+                //find selected product
+                final Product product = products.get(position);
+
+
+                //confirm that user wants to delete product "x"
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                builder.setTitle("Confirm deletion");
+
+                builder.setMessage("Are you sure you want to remove '" + product.getName() + "'?");
+
+                //when user select's "yes"
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        deleteData(product.getName());
+                        loadListview();
+                    }
+                });
+
+                //when user select's "no"
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getApplicationContext(), "Item '" + product.getName() + "' is not deleted", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                //build alert dialog
+                AlertDialog dialog = builder.create();
+
+                //display alert dialog
+                dialog.show();
                 return false;
             }
         });
 
+    }
 
+    public void deleteData(String name){
+        db.delete(sqlTable, "Name='" + name + "'", null);
+        printTotal();
     }
 
     //Writing dummy data
     public void writeData()
     {
-        writeProduct("ONEPLUS ONE", 5, 299.0f);
-        writeProduct("ONEPLUS TWO", 9, 399.0f);
-        writeProduct("ONEPLUS THREE", 15, 599.0f);
+        writeProduct("ONEPLUS ONE", 5, 299.0f, false);
+        writeProduct("ONEPLUS TWO", 9, 399.0f, false);
+        writeProduct("ONEPLUS THREE", 15, 599.0f, false);
     }
 
     //Insert method
@@ -107,6 +163,56 @@ public class MainActivity extends AppCompatActivity {
 
         //execute insert
         db.insert(sqlTable, null, inserts);
+        printTotal();
+    }
+
+    //when add product button is clicked
+    public void addItemClicked(View view){
+        AddProductDialog dialog = new AddProductDialog();
+        dialog.show(getFragmentManager(), "productInsert");
+    }
+
+    //Insert method without Toast notification
+    public void writeProduct(String Name, int Quantity, double Price, boolean notifyTotal)
+    {
+        ContentValues inserts = new ContentValues();
+        inserts.put("Name", Name);
+        inserts.put("Quantity", Quantity);
+        inserts.put("Price", Price);
+
+        //execute insert
+        db.insert(sqlTable, null, inserts);
+
+        //if the change in total should be shown
+        if(notifyTotal){
+            printTotal();
+        }
+    }
+
+    public void printTotal(){
+
+        //get list of products from database
+        List<Product> productList = getProducts(sqlTable);
+
+        double sum = 0;
+
+        if(productList.size() <= 0)
+        {
+            //no products available
+            Toast.makeText(getApplicationContext(), "No products found", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            for(int i = 0; i < productList.size(); i++){
+                Product product = productList.get(i);
+                sum += (product.getPrice() * product.getQuantity());
+            }
+
+            String total = Double.toString(sum);
+            Toast.makeText(getApplicationContext(), "Total price: " + total, Toast.LENGTH_LONG).show();
+        }
+
+
     }
 
     public void updateProduct(String targetName, String NewName, int Quantity, double Price)
@@ -152,6 +258,9 @@ public class MainActivity extends AppCompatActivity {
     public List<Product> getProducts(String tableName)
     {
 
+        //list of found products
+        List<Product> products = new ArrayList<Product>();
+
         //what we are looking from the database
         String[] resultColumns = new String[]{"_id", "Name", "Quantity", "Price"};
 
@@ -162,11 +271,8 @@ public class MainActivity extends AppCompatActivity {
 
         //if no items were found
         if(foundItems == 0){
-            return null;
+            return products;
         }
-
-        //list of found products
-        List<Product> products = new ArrayList<Product>();
 
         int index = 0;
         while(reader.moveToNext()){
