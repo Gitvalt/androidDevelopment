@@ -1,0 +1,15 @@
+{
+"Locations":
+	[  
+	   {  
+		  "Title":"JAMK",
+		  "Latitude":62.251149,
+		  "Longitude":25.741763
+	   },
+	   {  
+		  "Title":"Zero",
+		  "Latitude":0,
+		  "Longitude":0
+	   }
+	]
+}
