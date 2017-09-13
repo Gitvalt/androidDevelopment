@@ -18,6 +18,12 @@ import android.widget.Toast;
 public class AddProductDialog extends DialogFragment {
 
     //create interfaces
+    public interface AddProductDialogListener {
+        void onDialogPositiveClick(String name, int quantity, double price);
+        void onDialogNegativeClick();
+    }
+
+    AddProductDialogListener mListerner;
 
     @Override
     public void onAttach(Context context) {
@@ -32,6 +38,8 @@ public class AddProductDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         final View dialogView = inflater.inflate(R.layout.add_product, null);
+
+        mListerner = (AddProductDialogListener)getActivity();
 
         builder.setView(dialogView);
         builder.setTitle("Add new product");
@@ -50,11 +58,13 @@ public class AddProductDialog extends DialogFragment {
                     int quantity = Integer.parseInt(quantityBox.getText().toString());
                     Double price = Double.parseDouble(priceBox.getText().toString());
 
-
+                    //reply with response
+                    mListerner.onDialogPositiveClick(name, quantity, price);
                 }
                 catch (ClassCastException e)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "Creating a product failed. Incorrect value format", Toast.LENGTH_LONG).show();
+                    mListerner.onDialogNegativeClick();
                 }
 
             }
@@ -64,6 +74,7 @@ public class AddProductDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(getActivity().getApplicationContext(), "Adding new product has been canceled", Toast.LENGTH_LONG).show();
+                mListerner.onDialogNegativeClick();
             }
         });
 

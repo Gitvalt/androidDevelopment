@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AddProductDialog.AddProductDialogListener {
 
 
     private ListView listView;
@@ -48,6 +48,28 @@ public class MainActivity extends AppCompatActivity {
             //reload the listview
             loadListview();
         }
+    }
+
+    //implement interfaces
+
+
+    @Override
+    public void onDialogPositiveClick(String name, int quantity, double price) {
+        if(name == null || price <= 0){
+            //invalid inputs
+        }
+        else {
+            //add product to database
+            writeProduct(name, quantity, price);
+
+            //reload the listview
+            loadListview();
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick() {
+        Toast.makeText(getApplicationContext(), "Adding new product canceled", Toast.LENGTH_LONG);
     }
 
     //loads the products from Database
