@@ -47,10 +47,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listView = (ListView)findViewById(R.id.listView);
+
         //mediaPath = "/storage/14F2-231A/Android/media/MusicFiles";
+
+        // getExternalStorageDirectory is the internal memory, not the sd card?
+
+        // /storage/{sdcard-indentifier}/... returns the sd card!
+
+        // different phones indentify sdcard differently for example: "mount" or "sdcard"...
         mediaPath = Environment.getExternalStorageDirectory().getPath() + "/Music/";
 
-        // item listener
+        // item listener (when listview item is pressed)
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
