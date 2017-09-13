@@ -30,8 +30,8 @@
 
     <Button
         android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="210dp"
+        android:layout_height="54dp"
         android:layout_marginLeft="59dp"
         android:layout_marginTop="23dp"
         android:onClick="DialogClick"

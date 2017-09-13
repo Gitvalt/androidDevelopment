@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements customDialog.Cust
     //id system for notifications
     int notification_id = 1;
 
-    private ActionMode mAction;
+    private android.view.ActionMode mAction;
 
 
 
@@ -59,19 +59,17 @@ public class MainActivity extends AppCompatActivity implements customDialog.Cust
     //when menu button is pressed
     public void menuButtonClick(View view){
 
-        if(mAction != null){
-
-        }
-
         mAction = MainActivity.this.startActionMode(mActionModeCallback);
         view.setSelected(true);
     }
 
 
-    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+    private android.view.ActionMode.Callback mActionModeCallback = new android.view.ActionMode.Callback() {
 
+
+
+        @Override
+        public boolean onCreateActionMode(android.view.ActionMode mode, Menu menu) {
             MenuInflater inflater = mode.getMenuInflater();
 
             inflater.inflate(R.menu.menulayout, menu);
@@ -80,13 +78,12 @@ public class MainActivity extends AppCompatActivity implements customDialog.Cust
         }
 
         @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        public boolean onPrepareActionMode(android.view.ActionMode actionMode, Menu menu) {
             return false;
         }
 
         @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-
+        public boolean onActionItemClicked(android.view.ActionMode mode, MenuItem item) {
             switch (item.getItemId()){
                 case R.id.toast_msg:
                     toastFunction();
@@ -106,8 +103,8 @@ public class MainActivity extends AppCompatActivity implements customDialog.Cust
         }
 
         @Override
-        public void onDestroyActionMode(ActionMode mode) {
-
+        public void onDestroyActionMode(android.view.ActionMode actionMode) {
+            mAction = null;
         }
     };
 
