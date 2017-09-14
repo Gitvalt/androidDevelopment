@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">DialogAndNotification</string>
-    <string name="toast_Button">Press here for nice \"Toast\"</string>
-    <string name="dialogButton">Hello dialog</string>
-    <string name="notification_Button">Notification popup</string>
+    <string name="toast_Button">Press here to test \"Toast\"-feature</string>
+    <string name="dialogButton">Custom dialog test</string>
+    <string name="notification_Button">Test creating notifications</string>
     <string name="agree">I agree</string>
     <string name="disagree">I Disagree</string>
+    <string name="customMenu">Open custom menu</string>
 </resources>

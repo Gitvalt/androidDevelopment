@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ActionMode;
@@ -24,8 +25,8 @@ public class MainActivity extends AppCompatActivity implements customDialog.Cust
     //id system for notifications
     int notification_id = 1;
 
+    //current action mode
     private android.view.ActionMode mAction;
-
 
 
     @Override
@@ -37,32 +38,29 @@ public class MainActivity extends AppCompatActivity implements customDialog.Cust
 
     //when "get dialog" button is clicked
     public void DialogClick(View view){
+        //run dialog test method
         dialogFuntion();
     }
-
-
 
     //listens for the custom dialogs responses!
         @Override
         public void onDialogPositiveClick(boolean response) {
+            //notify user with Toast
             Toast.makeText(getApplicationContext(), ":)", Toast.LENGTH_SHORT).show();
+
+            //create notification
+            createNotification(Notification.VISIBILITY_PRIVATE, "Input \"agree\" received", "You have defined the custom input as \"nice\"", Notification.CATEGORY_EVENT);
         }
 
         @Override
         public void onDialogNegativeClick(boolean response) {
             Toast.makeText(getApplicationContext(), ":(", Toast.LENGTH_SHORT).show();
+            createNotification(Notification.BADGE_ICON_LARGE, "Testing", "upi", Notification.CATEGORY_EVENT);
         }
     //---
 
 
-
-    //when menu button is pressed
-    public void menuButtonClick(View view){
-
-        mAction = MainActivity.this.startActionMode(mActionModeCallback);
-        view.setSelected(true);
-    }
-
+    //Menu testing
 
     private android.view.ActionMode.Callback mActionModeCallback = new android.view.ActionMode.Callback() {
 
@@ -108,15 +106,11 @@ public class MainActivity extends AppCompatActivity implements customDialog.Cust
         }
     };
 
-
-
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menulayout, menu);
     }
-
-
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -132,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements customDialog.Cust
         notification_id++;
 
         /*
-        When using API 26 or newert
+        When using API 26 or newer
 
         //creating channel where notification are shown
         String channelID = "my_channel_1";
@@ -153,88 +147,113 @@ public class MainActivity extends AppCompatActivity implements customDialog.Cust
                 .setVisibility(visibility).build();
 
 
+
         //show the notification
         manager.notify(notification_id, notf);
     }
 
 
 
-    //when "get notification" button is clicked
-    public void notfClick(View view){
-        notificationFunction();
-    }
+    //button onClick
 
-    //when "get Toast" button is clicked
-    public void ToastClick(View view){
-
-        toastFunction();
-    }
-
-
-    private void toastFunction(){
-
-        Random rand = new Random();
-        int n = rand.nextInt(4);
-        String msg;
-
-        //every time "Give Toast" -button is pressed a random message is shown to user
-
-        switch (n){
-            case 0:
-                msg = "Hello user";
-                break;
-            case 1:
-                msg = "Nice day we are having";
-                break;
-            case 2:
-                msg = "There are limited number of possible responses";
-                break;
-            case 3:
-                msg = "Cake is a lie";
-                break;
-            case 4:
-                msg = "101100101 01100101 0111001";
-                break;
-            default:
-                msg = "Message is empty";
-                break;
+        //when "get notification" button is clicked
+        public void notfClick(View view){
+            //execute notification test method
+            notificationFunction();
         }
 
-        //show the message
-        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-    }
-
-    private void dialogFuntion(){
-
-        //create and show custom dialog
-        customDialog dialog = new customDialog();
-        dialog.show(getFragmentManager(), "someTag");
-
-    }
-
-    private void notificationFunction(){
-        createNotification(Notification.VISIBILITY_PUBLIC, "Moi käyttäjä", "Toimiikohan tämä?", Notification.CATEGORY_MESSAGE);
-
-        try {
-
-            final Runnable task = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(5000, 0);
-                        createNotification(Notification.VISIBILITY_PUBLIC, "Thread testing...", "Should have appeared 5 seconds after first notification", Notification.CATEGORY_PROGRESS);
-                    }
-                    catch (Exception ex){
-                        String msg = ex.getMessage();
-                    }
-                }
-            };
-
-            Thread thread = new Thread(task);
-            thread.start();
-
-        } catch (Exception ex){
-            String msg = ex.getMessage();
+        //when "get Toast" button is clicked
+        public void ToastClick(View view){
+            //execute testing method
+            toastFunction();
         }
+
+        //when menu button is pressed
+        public void menuButtonClick(View view){
+
+        mAction = MainActivity.this.startActionMode(mActionModeCallback);
+        view.setSelected(true);
     }
+
+    //---
+
+    //testing functions
+
+        //Toast test method
+        private void toastFunction(){
+
+            //select random int from range 0 to 4
+            Random rand = new Random();
+            int n = rand.nextInt(4);
+
+            //contains message
+            String msg;
+
+            //every time "Give Toast" -button is pressed a random message is shown to user
+
+            switch (n){
+                case 0:
+                    msg = "Hello user";
+                    break;
+                case 1:
+                    msg = "Nice day we are having";
+                    break;
+                case 2:
+                    msg = "There are limited number of possible responses";
+                    break;
+                case 3:
+                    msg = "Cake is a lie";
+                    break;
+                case 4:
+                    msg = "101100101 01100101 0111001";
+                    break;
+                default:
+                    msg = "Message is empty";
+                    break;
+            }
+
+            //show the message
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+        }
+
+        //Custom dialog test method
+        private void dialogFuntion(){
+
+            //create and show custom dialog
+            customDialog dialog = new customDialog();
+            dialog.show(getFragmentManager(), "someTag");
+
+        }
+
+        //Notification test method
+        private void notificationFunction(){
+
+            //creates and shows new notification
+            createNotification(Notification.VISIBILITY_PUBLIC, "Moi käyttäjä", "Toimiikohan tämä?", Notification.CATEGORY_MESSAGE);
+
+            //not part of the assigment but here is some notification testing with threads
+            try {
+
+                final Runnable task = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(5000, 0);
+                            createNotification(Notification.VISIBILITY_PUBLIC, "Thread testing...", "Should have appeared 5 seconds after first notification", Notification.CATEGORY_PROGRESS);
+                        }
+                        catch (Exception ex){
+                            String msg = ex.getMessage();
+                        }
+                    }
+                };
+
+                Thread thread = new Thread(task);
+                thread.start();
+
+            } catch (Exception ex){
+                String msg = ex.getMessage();
+            }
+        }
+
+    //---
 }

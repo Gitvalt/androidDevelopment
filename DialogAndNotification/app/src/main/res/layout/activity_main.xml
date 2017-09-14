@@ -8,46 +8,54 @@
 
     <Button
         android:id="@+id/button_1"
-        android:layout_width="wrap_content"
+        android:layout_width="210dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="59dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="16dp"
         android:onClick="ToastClick"
         android:text="@string/toast_Button"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/notif_button"
-        android:layout_width="wrap_content"
+        android:layout_width="210dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="59dp"
-        android:layout_marginTop="23dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="24dp"
         android:onClick="notfClick"
         android:text="@string/notification_Button"
+        app:layout_constraintHorizontal_bias="0.506"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button3" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="210dp"
         android:layout_height="54dp"
-        android:layout_marginLeft="59dp"
-        android:layout_marginTop="23dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="18dp"
         android:onClick="DialogClick"
         android:text="@string/dialogButton"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_1" />
+        app:layout_constraintTop_toBottomOf="@+id/button_1"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/menuButton"
-        android:layout_width="wrap_content"
+        android:layout_width="210dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="53dp"
         android:onClick="menuButtonClick"
-        android:text="Menu button"
+        android:text="@string/customMenu"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/notif_button" />
