@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="support-compat-26.0.0-alpha1">
+    <CLASSES>
+      <root url="jar://D:/astudio-avd/.android/build-cache/fa53576fd231b9b05c24d396ed70825bb5c466eb/output/jars/classes.jar!/" />
+      <root url="file://D:/astudio-avd/.android/build-cache/fa53576fd231b9b05c24d396ed70825bb5c466eb/output/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://D:/astudio-sdk/extras/android/m2repository/com/android/support/support-compat/26.0.0-alpha1/support-compat-26.0.0-alpha1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

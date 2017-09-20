@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -15,6 +16,13 @@ import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.android.youtube.player.YouTubePlayerView;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class MainActivity extends YouTubeBaseActivity {
@@ -22,20 +30,19 @@ public class MainActivity extends YouTubeBaseActivity {
 
     private String YoutubeLink = "DnBHq5I52LM";
     private String APIKEY = "AIzaSyDZ0GaJniVAIsgNwQetR1f9RHUDpmtofo0";
+    private URL youtubeSearchLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fetchNames name = new fetchNames();
+
         LoadVideo(YoutubeLink);
     }
 
-    public void fetchNamesMethod(){
-
-    }
-
-    //Load video and display fragment
+    //Load video and display in fragment
     public void LoadVideo(final String Url){
         YouTubePlayerFragment youTubePlayerSupportFragment = YouTubePlayerFragment.newInstance();
 
@@ -43,6 +50,7 @@ public class MainActivity extends YouTubeBaseActivity {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 youTubePlayer.cueVideo(Url);
+
             }
 
             @Override
@@ -64,13 +72,49 @@ public class MainActivity extends YouTubeBaseActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            super.onPostExecute(s);
+            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT);
+        }
+
+        public String[] fetchNamesMethod(String searchParam){
+            try
+            {
+                youtubeSearchLink = new URL("https://www.googleapis.com/youtube/v3/search");
+
+                HttpURLConnection connection = (HttpURLConnection) youtubeSearchLink.openConnection();
+
+                connection.addRequestProperty("part","snippet");
+                connection.addRequestProperty("q",searchParam);
+                connection.addRequestProperty("type","video");
+                connection.addRequestProperty("maxResults","30");
+
+                connection.connect();
+
+                StringBuilder builder = new StringBuilder();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line+"\n");
+                }
+
+                reader.close();
+
+                connection.disconnect();
+
+
+            }
+            catch (IOException ex)
+            {
+
+            }
         }
 
         @Override
         protected String doInBackground(URL... urls) {
-            fetchNamesMethod();
-            return null;
+            String[] item = fetchNamesMethod("YTP");
+            return item;
         }
     }
 }

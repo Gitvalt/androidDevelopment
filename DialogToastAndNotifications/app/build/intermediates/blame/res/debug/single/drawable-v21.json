@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "D:\\K1967\\android\\androidDevelopment\\DialogToastAndNotifications\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v21\\abc_action_bar_item_background_material.xml",
+        "source": "D:\\astudio-avd\\.android\\build-cache\\e182005c129dd74dff0557ecea3075f01fb9c5a0\\output\\res\\drawable-v21\\abc_action_bar_item_background_material.xml"
+    },
+    {
+        "merged": "D:\\K1967\\android\\androidDevelopment\\DialogToastAndNotifications\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v21\\abc_edit_text_material.xml",
+        "source": "D:\\astudio-avd\\.android\\build-cache\\e182005c129dd74dff0557ecea3075f01fb9c5a0\\output\\res\\drawable-v21\\abc_edit_text_material.xml"
+    },
+    {
+        "merged": "D:\\K1967\\android\\androidDevelopment\\DialogToastAndNotifications\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v21\\abc_btn_colored_material.xml",
+        "source": "D:\\astudio-avd\\.android\\build-cache\\e182005c129dd74dff0557ecea3075f01fb9c5a0\\output\\res\\drawable-v21\\abc_btn_colored_material.xml"
+    },
+    {
+        "merged": "D:\\K1967\\android\\androidDevelopment\\DialogToastAndNotifications\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v21\\notification_action_background.xml",
+        "source": "D:\\astudio-avd\\.android\\build-cache\\e182005c129dd74dff0557ecea3075f01fb9c5a0\\output\\res\\drawable-v21\\notification_action_background.xml"
+    }
+]

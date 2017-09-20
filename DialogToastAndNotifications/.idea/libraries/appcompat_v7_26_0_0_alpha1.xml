@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="appcompat-v7-26.0.0-alpha1">
+    <CLASSES>
+      <root url="file://D:/astudio-avd/.android/build-cache/e182005c129dd74dff0557ecea3075f01fb9c5a0/output/res" />
+      <root url="jar://D:/astudio-avd/.android/build-cache/e182005c129dd74dff0557ecea3075f01fb9c5a0/output/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://D:/astudio-sdk/extras/android/m2repository/com/android/support/appcompat-v7/26.0.0-alpha1/appcompat-v7-26.0.0-alpha1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

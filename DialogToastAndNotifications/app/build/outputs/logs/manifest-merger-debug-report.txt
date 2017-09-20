@@ -1,0 +1,87 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:2:1-21:12
+	package
+		ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:3:5-60
+		INJECTED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml
+		INJECTED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml
+		INJECTED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:2:11-69
+	android:versionCode
+		INJECTED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml
+		INJECTED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml
+application
+ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:5:5-19:19
+MERGED from [com.android.support:appcompat-v7:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\e182005c129dd74dff0557ecea3075f01fb9c5a0\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-v4:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\a46defa89b7275af36431945ac4d8ff0e27d3b15\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\e3840308f1c19115a4cad0d08fa79216cbb21ece\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-fragment:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\5f0969982cbd67954277895d85bde591485cc1de\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\6ef5c3ab8b472cb222820560665138ff75afb4a6\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\a9a4e1b56de66d745d7606cd364449d8ca868b0d\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\c486a9985334922d87672301072f7782d3668393\output\AndroidManifest.xml:26:5-20
+MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\8db075b6c7b6ac4765e6a389015218b8bf749d0d\output\AndroidManifest.xml:26:5-20
+MERGED from [com.android.support:support-compat:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\fa53576fd231b9b05c24d396ed70825bb5c466eb\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] D:\astudio-avd\.android\build-cache\c8c253ded1d54556f30cb34fc4f84a5c0354fd89\output\AndroidManifest.xml:9:5-20
+	android:label
+		ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:8:9-41
+	android:supportsRtl
+		ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:10:9-35
+	android:roundIcon
+		ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:9:9-54
+	android:allowBackup
+		ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:6:9-35
+	android:icon
+		ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:7:9-43
+	android:theme
+		ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:11:9-40
+activity#company.supernice.dialogtoastandnotifications.MainActivity
+ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:12:9-18:20
+	android:name
+		ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:12:19-47
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:13:13-17:29
+action#android.intent.action.MAIN
+ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:14:17-69
+	android:name
+		ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:14:25-66
+category#android.intent.category.LAUNCHER
+ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:16:17-77
+	android:name
+		ADDED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml:16:27-74
+uses-sdk
+INJECTED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+MERGED from [com.android.support:appcompat-v7:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\e182005c129dd74dff0557ecea3075f01fb9c5a0\output\AndroidManifest.xml:21:5-23:78
+MERGED from [com.android.support:support-v4:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\a46defa89b7275af36431945ac4d8ff0e27d3b15\output\AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\e3840308f1c19115a4cad0d08fa79216cbb21ece\output\AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-fragment:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\5f0969982cbd67954277895d85bde591485cc1de\output\AndroidManifest.xml:21:5-23:60
+MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\6ef5c3ab8b472cb222820560665138ff75afb4a6\output\AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\a9a4e1b56de66d745d7606cd364449d8ca868b0d\output\AndroidManifest.xml:21:5-23:61
+MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\c486a9985334922d87672301072f7782d3668393\output\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\8db075b6c7b6ac4765e6a389015218b8bf749d0d\output\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\fa53576fd231b9b05c24d396ed70825bb5c466eb\output\AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] D:\astudio-avd\.android\build-cache\c8c253ded1d54556f30cb34fc4f84a5c0354fd89\output\AndroidManifest.xml:5:5-7:41
+	tools:overrideLibrary
+		ADDED from [com.android.support:appcompat-v7:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\e182005c129dd74dff0557ecea3075f01fb9c5a0\output\AndroidManifest.xml:23:9-75
+	android:targetSdkVersion
+		INJECTED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml
+		INJECTED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml
+		INJECTED from D:\K1967\android\androidDevelopment\DialogToastAndNotifications\app\src\main\AndroidManifest.xml
+meta-data#android.support.VERSION
+ADDED from [com.android.support:appcompat-v7:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\e182005c129dd74dff0557ecea3075f01fb9c5a0\output\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-v4:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\a46defa89b7275af36431945ac4d8ff0e27d3b15\output\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\e3840308f1c19115a4cad0d08fa79216cbb21ece\output\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-fragment:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\5f0969982cbd67954277895d85bde591485cc1de\output\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\6ef5c3ab8b472cb222820560665138ff75afb4a6\output\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\a9a4e1b56de66d745d7606cd364449d8ca868b0d\output\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\c486a9985334922d87672301072f7782d3668393\output\AndroidManifest.xml:22:5-24:41
+MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\8db075b6c7b6ac4765e6a389015218b8bf749d0d\output\AndroidManifest.xml:22:5-24:41
+MERGED from [com.android.support:support-compat:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\fa53576fd231b9b05c24d396ed70825bb5c466eb\output\AndroidManifest.xml:25:5-27:41
+	android:value
+		ADDED from [com.android.support:appcompat-v7:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\e182005c129dd74dff0557ecea3075f01fb9c5a0\output\AndroidManifest.xml:27:9-38
+	android:name
+		ADDED from [com.android.support:appcompat-v7:26.0.0-alpha1] D:\astudio-avd\.android\build-cache\e182005c129dd74dff0557ecea3075f01fb9c5a0\output\AndroidManifest.xml:26:9-47
