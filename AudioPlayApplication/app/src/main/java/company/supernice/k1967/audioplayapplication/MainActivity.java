@@ -25,21 +25,19 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    //listview containing the available songs
     private ListView listView;
 
+    //path to the mediafiles
     private String mediaPath;
 
+    //list of found songs
     private List<String> songs = new ArrayList<String>();
 
     private MediaPlayer mediaPlayer = new MediaPlayer();
 
+    //the song loader task
     private LoadSongsTask task;
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mediaPlayer.isPlaying()) mediaPlayer.reset();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +45,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listView = (ListView)findViewById(R.id.listView);
-
-        //mediaPath = "/storage/14F2-231A/Android/media/MusicFiles";
-
-        // getExternalStorageDirectory is the internal memory, not the sd card?
-
-        // /storage/{sdcard-indentifier}/... returns the sd card!
 
         // different phones indentify sdcard differently for example: "mount" or "sdcard"...
         mediaPath = Environment.getExternalStorageDirectory().getPath() + "/Music/";
@@ -68,18 +60,28 @@ public class MainActivity extends AppCompatActivity {
                     mediaPlayer.setDataSource(songs.get(position));
                     mediaPlayer.prepare();
                     mediaPlayer.start();
-                    }
-                    catch (IOException e) {
+                }
+                catch (IOException e) {
                     Toast.makeText(getBaseContext(), "Cannot start audio !", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+
+        //setup the task and execute it
         task = new LoadSongsTask();
         task.execute();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mediaPlayer.isPlaying()) mediaPlayer.reset();
+    }
+
+    //the song loading task
     private class LoadSongsTask extends AsyncTask<Void, String, Void> {
+
 
         private List<String> loadedSongs = new ArrayList<String>();
 
@@ -132,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
                     String error = e.getMessage();
                 }
             }
+
+            //if defined mediapath is not a directory
             else
             {
                 String name = path.getAbsolutePath();
