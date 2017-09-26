@@ -22,6 +22,7 @@ public class GolfCourseWishListAdapter extends RecyclerView.Adapter<GolfCourseWi
         this.mContext = context;
     }
 
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout placeNameHolder;
         public TextView placeName;
@@ -40,12 +41,14 @@ public class GolfCourseWishListAdapter extends RecyclerView.Adapter<GolfCourseWi
         return MainActivity.places.size();
     }
 
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_places, parent, false);
         return new ViewHolder(view);
     }
 
+    
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Place place = MainActivity.places.get(position);
