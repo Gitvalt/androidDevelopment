@@ -33,6 +33,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
@@ -210,6 +211,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             {
                                 Log.w("TAGGER", "No location read");
                             }
+                        }
+                    })
+
+                    .addOnFailureListener(this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("TAGGER_ER", "Reading location failed");
+                            Log.w("TAGGER_ER", e.getMessage());
                         }
                     });
 
