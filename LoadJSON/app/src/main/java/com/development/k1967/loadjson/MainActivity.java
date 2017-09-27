@@ -23,10 +23,13 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Response;
+import com.google.android.gms.drive.events.ChangeListener;
 import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -68,8 +71,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //where the phone currently is
     private Location HomeLocation;
+    private LatLng Destination;
 
     private String APIKEY = "AIzaSyDZ0GaJniVAIsgNwQetR1f9RHUDpmtofo0";
+
+    private LocationCallback locationCallback;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
 
         locationArray = null;
+        Destination = null;
         infoText = (TextView) findViewById(R.id.statusText);
 
         //creating map element
@@ -86,8 +95,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         providerClient = LocationServices.getFusedLocationProviderClient(this);
 
-        providerClient.requestLocationUpdates(new LocationRequest())
-
+        //get gps location updates
+        locationCallback = new LocationCallback(){
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                //update home location
+                HomeLocation = locationResult.getLastLocation();
+                renderDirections(Destination);
+            }
+        };
 
         //create custom json-fetcher object and define what to do when data has been fetched
         JSONFetcher task = new JSONFetcher() {
@@ -115,9 +131,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         };
 
-
         task.execute("http://student.labranet.jamk.fi/~K1967/androidCourses/dummyJSON.json");
     }
+
 
 
         @Override
@@ -134,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
 
 
     private void renderDirections(LatLng destination){
@@ -209,41 +226,59 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 String msg = "Marker: " + marker.getTitle() + " has been pressed!";
                 Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                renderDirections(marker.getPosition());
+
+                Destination = marker.getPosition();
+                renderDirections(Destination);
+
                 return false;
             }
         });
+
+        if(locationArray.length() > 0){
+            onDataLoaded();
+        }
+
     }
 
     //when loading is completed --> create and add markers to map
     private void onDataLoaded() {
 
-        //Has information been loaded?
-        if (locationArray.length() > 0) {
-            try
-            {
-                //read locations and create markers
-                for (int i = 0; i < locationArray.length(); i++) {
+        //is map loaded?
+        if(map == null)
+        {
+            //if not then execute this method again when map is loaded
+        }
 
-                    JSONObject item = locationArray.getJSONObject(i);
-                    item.length();
+        //map is loaded
+        else
+        {
+            //Has information been found?
+            if (locationArray.length() > 0) {
+                try
+                {
+                    //read locations and create markers
+                    for (int i = 0; i < locationArray.length(); i++) {
 
-                    map.addMarker(new MarkerOptions()
-                            .position(new LatLng(item.getDouble("Latitude"), item.getDouble("Longitude")))
-                            .title(item.getString("Title"))
-                    );
+                        JSONObject item = locationArray.getJSONObject(i);
+                        item.length();
 
+                        map.addMarker(new MarkerOptions()
+                                .position(new LatLng(item.getDouble("Latitude"), item.getDouble("Longitude")))
+                                .title(item.getString("Title"))
+                        );
+
+
+                    }
 
                 }
-
+                catch (JSONException error) {   }
             }
-            catch (JSONException error) {   }
+            //when no locations were found or JSON load failed
+            else
+            {
+                Toast.makeText(this, "No locations found!", Toast.LENGTH_SHORT).show();
+            }
         }
-        //when no locations were found or JSON load failed
-        else {
-            Toast.makeText(this, "No locations found!", Toast.LENGTH_SHORT).show();
-        }
-
     }
 
     //check permissions for fine_location and continue
