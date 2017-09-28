@@ -13,16 +13,17 @@ import java.util.ArrayList;
 
 /**
  * Created by Valtteri on 9.9.2017.
+ * Creates the list shown in the main activity
  */
 
-public class productList extends ArrayAdapter<Product> {
+public class ProductList extends ArrayAdapter<Product> {
 
     //application context
     private Context context;
 
     private ArrayList<Product> items;
 
-    public productList(Context context, ArrayList<Product> products){
+    public ProductList(Context context, ArrayList<Product> products){
         super(context, R.layout.product_display_list, products);
         this.context = context;
         this.items = products;

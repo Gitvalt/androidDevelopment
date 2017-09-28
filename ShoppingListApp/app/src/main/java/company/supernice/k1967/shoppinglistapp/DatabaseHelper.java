@@ -8,11 +8,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Created by Valtteri on 9.9.2017.
+ * For creation and upgrading the sql-database
  */
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public final String DataTable = "phoneStore";
+    public static final String DataTable = "phoneStore";
     public static final String DataBaseName = "NiceData";
     private SQLiteDatabase db;
 
@@ -27,9 +28,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db = sqLiteDatabase;
     }
 
+    //creates the database from scratch if application in started again. (This is for testing purposes)
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        db.execSQL("DROP TABLE IF EXISTS "+ DataTable);
+        db.execSQL("DROP TABLE IF EXISTS " + DataTable);
         onCreate(db);
     }
 

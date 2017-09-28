@@ -2,6 +2,7 @@ package company.supernice.k1967.shoppinglistapp;
 
 /**
  * Created by Valtteri on 9.9.2017.
+ * Product-object class
  */
 
 public class Product {

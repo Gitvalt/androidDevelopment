@@ -1,14 +1,10 @@
 package company.supernice.k1967.shoppinglistapp;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
-import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,10 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.sql.SQLData;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements AddProductDialog.AddProductDialogListener {
 
@@ -103,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements AddProductDialog.
             prod_List.add(products.get(i));
         }
 
-        productList adapter = new productList(this, prod_List);
+        ProductList adapter = new ProductList(this, prod_List);
         listView.setAdapter(adapter);
 
         // item listener

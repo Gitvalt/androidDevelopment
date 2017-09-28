@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 /**
  * Created by Valtteri on 9.9.2017.
+ * Dialog for adding new items to database
  */
 
 public class AddProductDialog extends DialogFragment {
