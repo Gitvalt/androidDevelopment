@@ -161,6 +161,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         {
             homeCoordinates = new LatLng(HomeLocation.getLatitude(), HomeLocation.getLongitude());
         }
+        else if(HomeLocation == null){
+            Toast.makeText(this, "Phone location unavailable", Toast.LENGTH_SHORT).show();
+            return;
+        }
         else
         {
             homeCoordinates = startPoint;
@@ -220,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
                             PolylineOptions options = new PolylineOptions();
-                            
+
                             for(int i = 0; i < steps.length(); i++)
                             {
                                 JSONObject start = steps.getJSONObject(i).getJSONObject("start_location");
