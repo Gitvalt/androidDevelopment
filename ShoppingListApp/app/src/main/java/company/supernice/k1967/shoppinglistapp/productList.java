@@ -42,9 +42,9 @@ public class ProductList extends ArrayAdapter<Product> {
         Product prod = items.get(position);
 
         //get the textviews from the custom display
-        TextView itemView = (TextView)rowView.findViewById(R.id.Item);
-        TextView quantityView = (TextView)rowView.findViewById(R.id.Quantity);
-        TextView priceView = (TextView)rowView.findViewById(R.id.Price);
+        TextView itemView = rowView.findViewById(R.id.Item);
+        TextView quantityView = rowView.findViewById(R.id.Quantity);
+        TextView priceView = rowView.findViewById(R.id.Price);
 
         double priceCheck = prod.getPrice();
 

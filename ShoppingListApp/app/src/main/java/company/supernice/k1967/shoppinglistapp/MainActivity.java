@@ -5,8 +5,8 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements AddProductDialog.
         //load the listview
         loadListview();
 
+
+
         //if the datatable contains no products and the application is just started --> create dummy data
         if(getProducts(sqlTable).size() <= 0){
 
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements AddProductDialog.
 
             //reload the listview
             loadListview();
+
+
         }
     }
 
@@ -63,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements AddProductDialog.
 
     @Override
     public void onDialogNegativeClick() {
-        Toast.makeText(getApplicationContext(), "Adding new product canceled", Toast.LENGTH_LONG);
+        Toast.makeText(getApplicationContext(), "Adding new product canceled", Toast.LENGTH_LONG).show();
     }
 
     //loads the products from Database
@@ -84,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements AddProductDialog.
         db = (helper.getReadableDatabase());
 
         //fetch the table name
-        sqlTable = helper.DataTable;
+        sqlTable = DatabaseHelper.DataTable;
 
         //read products from the database
         final List<Product> products = getProducts(sqlTable);

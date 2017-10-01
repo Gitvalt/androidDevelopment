@@ -45,9 +45,9 @@ public class AddProductDialog extends DialogFragment {
         builder.setView(dialogView);
         builder.setTitle("Add new product");
 
-        final EditText nameBox = (EditText)dialogView.findViewById(R.id.nameBox);
-        final EditText quantityBox = (EditText)dialogView.findViewById(R.id.QuantityBox);
-        final EditText priceBox = (EditText)dialogView.findViewById(R.id.priceBox);
+        final EditText nameBox = dialogView.findViewById(R.id.nameBox);
+        final EditText quantityBox = dialogView.findViewById(R.id.QuantityBox);
+        final EditText priceBox = dialogView.findViewById(R.id.priceBox);
 
         //when user tries to submit results
         builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {

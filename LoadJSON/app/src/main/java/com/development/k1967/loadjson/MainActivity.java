@@ -3,6 +3,7 @@ package com.development.k1967.loadjson;
 import android.*;
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Path;
@@ -40,6 +41,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -59,15 +61,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //info textview element
     public TextView infoText;
 
-    private int permissionTag = 123;
-
     //locations defined in the loaded json
     private JSONArray locationArray;
 
     //map-element
     private GoogleMap map;
-
-    private FusedLocationProviderClient providerClient;
 
     //where the phone currently is
     private Location HomeLocation;
@@ -77,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private LocationCallback locationCallback;
 
+    private int permissionTag = 123;
+    private FusedLocationProviderClient providerClient;
 
 
     @Override
@@ -87,13 +87,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationArray = null;
         Destination = null;
         infoText = (TextView) findViewById(R.id.statusText);
+        providerClient = new FusedLocationProviderClient(this);
 
         //creating map element
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
         mapFragment.getMapAsync(this);
-
-
-        providerClient = LocationServices.getFusedLocationProviderClient(this);
 
         //get gps location updates
         locationCallback = new LocationCallback(){
@@ -101,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onLocationResult(LocationResult locationResult) {
                 //update home location
                 HomeLocation = locationResult.getLastLocation();
-                renderDirections(Destination);
+                renderDirections(null, Destination);
             }
         };
 
@@ -118,12 +116,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     infoText.setText("Loading json has been completed!");
 
                     locationArray = object.getJSONArray("Locations");
-                    onDataLoaded();
-
-
-                    //Log.d("Locator", "Locator start!");
+                    addMarkers(locationArray);
                     SelfLocator();
 
+                    //after we received the locations we look for phones location;
 
                 } catch (JSONException ex) {
 
@@ -152,17 +148,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+    //render path from current location to destination
+    private void renderDirections(LatLng startPoint, final LatLng destination){
 
-    private void renderDirections(LatLng destination){
 
-        LatLng homeCoordinates = new LatLng(HomeLocation.getLatitude(), HomeLocation.getLongitude());
+        LatLng homeCoordinates = null;
+
+        if(startPoint == null)
+        {
+            homeCoordinates = new LatLng(HomeLocation.getLatitude(), HomeLocation.getLongitude());
+        }
+        else
+        {
+            homeCoordinates = startPoint;
+        }
+
         LatLng destCoordinates = destination;
 
         try
         {
             //Url to directions API
             URL destinationURL =
-                    new URL("https://maps.googleapis.com/maps/api/directions/json?origin=" + HomeLocation.getLatitude() + "," + HomeLocation.getLongitude() +
+                    new URL("https://maps.googleapis.com/maps/api/directions/json?origin=" + homeCoordinates.latitude + "," + homeCoordinates.longitude +
                             "&destination=" + destCoordinates.latitude + "," + destCoordinates.longitude + "&key=" + APIKEY);
 
 
@@ -170,6 +177,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 @Override
                 protected void onPreExecute() {
                     Log.i("Destination_info", "Fetching Destination starts");
+                    map.clear();
+                    reloadMarkers();
                 }
 
                 @Override
@@ -179,28 +188,71 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     try
                     {
+
+                        String item  = response.getString("status");
+
                         //Directions could not be generated for the two markers
-                        if (response.get("status") == "ZERO_RESULTS")
+                        if (item.equals("ZERO_RESULTS"))
                         {
                             Log.e("Destination_ERROR", "Could not generate directions between two valid destinations");
+                            infoText.setText("Directions could not be generated");
                         }
 
                         //origin or source is not valid
-                        else if(response.getString("status") == "NOT_FOUND")
+                        else if(item.equals("NOT_FOUND"))
                         {
                             Log.e("Destination_ERROR", "Destination or Starting place is not a valid address/coordinate");
+                            infoText.setText("Destination or Location is not valid");
                         }
 
                         //fetching directions was successfull
                         else
                         {
+                            Log.i("Successfull Directions", "Fetching JSON directions has succeeded");
+                            infoText.setText("Directions have been generated");
+
+                            JSONArray routes = response.getJSONArray("routes");
+                            JSONArray legs = routes.getJSONObject(0).getJSONArray("legs");
+                            JSONArray steps = legs.getJSONObject(0).getJSONArray("steps");
+
+
+                            PolygonOptions options = new PolygonOptions();
+
+
+                            for(int i = 0; i < steps.length() - 1; i++)
+                            {
+                                JSONObject start = steps.getJSONObject(i).getJSONObject("start_location");
+                                LatLng startLatLng = new LatLng(start.getDouble("lat"), start.getDouble("lng"));
+
+                                JSONObject end = steps.getJSONObject(i).getJSONObject("end_location");
+                                LatLng endLatLng = new LatLng(end.getDouble("lat"), end.getDouble("lng"));
+
+                                LatLng homeLatLng = new LatLng(HomeLocation.getLatitude(), HomeLocation.getLongitude());
+
+                                /*
+                                    Do not draw a staright line through current location and destination
+                                 */
+
+                                if(startLatLng.equals(destination) && endLatLng.equals(homeLatLng))
+                                {   }
+                                else if(startLatLng.equals(homeLatLng) && endLatLng.equals(destination))
+                                {   }
+                                else
+                                {
+                                    options.add(startLatLng, endLatLng);
+                                }
+                            }
+
+                            map.addPolygon(options);
 
                         }
 
                     }
                     catch (JSONException e)
                     {
-                        Log.e("Destination_ERROR", "Fetching JSON directions has failed");
+                        Log.e("Destination_ERROR", "Fetching JSON directions has failed, Exception!");
+                        Log.e("Destination_ERROR", e.getMessage());
+
                     }
                 }
             };
@@ -214,11 +266,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    private void reloadMarkers()
+    {
+        addMarkers(locationArray);
+        SelfLocator();
+    }
+
     //when map creation is complited --> generate listerners
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        map.setMaxZoomPreference(10.0f);
+        map.setMaxZoomPreference(20.0f);
 
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -227,52 +285,70 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 String msg = "Marker: " + marker.getTitle() + " has been pressed!";
                 Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 
-                Destination = marker.getPosition();
-                renderDirections(Destination);
+                /*
+                When marker has been clicked, render directions from phone location to destination.
+                 */
 
+                LatLng markerPosition = marker.getPosition();
+                LatLng homePosition = new LatLng(HomeLocation.getLatitude(), HomeLocation.getLongitude());
+
+                if(!markerPosition.equals(homePosition)){
+                    Destination = marker.getPosition();
+                    renderDirections(null, Destination);
+                }
                 return false;
             }
         });
 
-        if(locationArray.length() > 0){
-            onDataLoaded();
+
+        /*
+        If locations have already been loaded then markers can be shown
+         */
+
+        if(locationArray != null){
+            addMarkers(locationArray);
+            SelfLocator();
         }
 
     }
 
+    
     //when loading is completed --> create and add markers to map
-    private void onDataLoaded() {
+    private void addMarkers(JSONArray locations)
+    {
 
         //is map loaded?
         if(map == null)
         {
-            //if not then execute this method again when map is loaded
+            //if map is not loaded then execute this method again when map is loaded
         }
 
         //map is loaded
         else
         {
             //Has information been found?
-            if (locationArray.length() > 0) {
+            if (locations != null) {
                 try
                 {
-                    //read locations and create markers
-                    for (int i = 0; i < locationArray.length(); i++) {
+                    map.clear();
 
-                        JSONObject item = locationArray.getJSONObject(i);
+                    //read locations and create markers
+                    for (int i = 0; i < locations.length(); i++) {
+
+                        JSONObject item = locations.getJSONObject(i);
                         item.length();
 
                         map.addMarker(new MarkerOptions()
                                 .position(new LatLng(item.getDouble("Latitude"), item.getDouble("Longitude")))
                                 .title(item.getString("Title"))
                         );
-
-
                     }
+
 
                 }
                 catch (JSONException error) {   }
             }
+
             //when no locations were found or JSON load failed
             else
             {
@@ -284,20 +360,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //check permissions for fine_location and continue
     private void SelfLocator() {
 
-        int checkPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        /*
+            SelfLocator --> wait for onRequestPermissionResults -->  LoadLocation --> ReceiveSelfLocation
+         */
+
+        int checkPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
 
         //if permission for fine_location is not granted
         if(checkPermission != PackageManager.PERMISSION_GRANTED)
         {
-            //ask for permission
-            android.support.v4.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, permissionTag);
-
+            android.support.v4.app.ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, permissionTag);
             //continues in onRequestPermissionResult method when user has granted permission
-
         }
+
         //if permission has been granted
         else
         {
+            //get phone location
             LoadLocation();
         }
     }
@@ -338,13 +417,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //read location data from gps
     private void LoadLocation(){
-        int checkPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int checkPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
 
         //if no permission for fine_location
         if(checkPermission != PackageManager.PERMISSION_GRANTED)
         {
             //ask for permission
-            android.support.v4.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, permissionTag);
+            android.support.v4.app.ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, permissionTag);
 
         }
 
@@ -363,7 +442,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             if(location != null)
                             {
                                 Log.i("Location_INFO", "Location test: " + location.getLatitude() + " ; " + location.getLongitude());
-                                //send fetched location information to method
+
+                                //send fetched location information to handler method
                                 receiveSelfLocation(location);
                             }
                             else
@@ -385,10 +465,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     });
 
         }
-
-    }
-
-
+}
 
 } //end of MainActivity class
 

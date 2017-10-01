@@ -9,6 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <provider
+            android:authorities="company.supernice.k1967.shoppinglistapp"
+            android:name="ShoppingListProvider">
+        </provider>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
