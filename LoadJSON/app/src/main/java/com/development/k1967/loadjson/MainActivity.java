@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -55,6 +56,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -216,10 +219,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             JSONArray steps = legs.getJSONObject(0).getJSONArray("steps");
 
 
-                            PolygonOptions options = new PolygonOptions();
-
-
-                            for(int i = 0; i < steps.length() - 1; i++)
+                            PolylineOptions options = new PolylineOptions();
+                            
+                            for(int i = 0; i < steps.length(); i++)
                             {
                                 JSONObject start = steps.getJSONObject(i).getJSONObject("start_location");
                                 LatLng startLatLng = new LatLng(start.getDouble("lat"), start.getDouble("lng"));
@@ -228,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 LatLng endLatLng = new LatLng(end.getDouble("lat"), end.getDouble("lng"));
 
                                 LatLng homeLatLng = new LatLng(HomeLocation.getLatitude(), HomeLocation.getLongitude());
+
 
                                 /*
                                     Do not draw a staright line through current location and destination
@@ -243,7 +246,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 }
                             }
 
-                            map.addPolygon(options);
+                            //options.addAll(list);
+                            map.addPolyline(options);
 
                         }
 
