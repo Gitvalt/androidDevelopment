@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,27 +60,34 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    //info textview element
+    //info TextView element
     public TextView infoText;
 
-    //locations defined in the loaded json
+
+    //locations fetched from student labranet json-file
     private JSONArray locationArray;
+    private static final String jsonLocation = "http://student.labranet.jamk.fi/~K1967/androidCourses/dummyJSON.json";
 
     //map-element
     private GoogleMap map;
 
+    private GoogleApiClient mGoogleApiClient;
+
     //where the phone currently is
     private Location HomeLocation;
+
+    //Current directions destination
     private LatLng Destination;
 
-    private String APIKEY = "AIzaSyDZ0GaJniVAIsgNwQetR1f9RHUDpmtofo0";
+    //currently rendered directions
+    private Polyline currentPath;
+    private PolylineOptions currentPathOptions;
 
-    private LocationCallback locationCallback;
-
-    private int permissionTag = 123;
-    private FusedLocationProviderClient providerClient;
+    //google apikey for directions and map
+    private static final String APIKEY = "AIzaSyDZ0GaJniVAIsgNwQetR1f9RHUDpmtofo0";
+    private static final int permissionTag = 123;
 
 
     @Override
@@ -90,21 +98,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationArray = null;
         Destination = null;
         infoText = (TextView) findViewById(R.id.statusText);
-        providerClient = new FusedLocationProviderClient(this);
 
         //creating map element
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
         mapFragment.getMapAsync(this);
 
-        //get gps location updates
-        locationCallback = new LocationCallback(){
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                //update home location
-                HomeLocation = locationResult.getLastLocation();
-                renderDirections(null, Destination);
-            }
-        };
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
 
         //create custom json-fetcher object and define what to do when data has been fetched
         JSONFetcher task = new JSONFetcher() {
@@ -130,31 +133,94 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         };
 
-        task.execute("http://student.labranet.jamk.fi/~K1967/androidCourses/dummyJSON.json");
+        //execute created task
+        task.execute(jsonLocation);
     }
 
+    //when Main Activity is stated
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-
-        @Override
-        public void onConnected(@Nullable Bundle bundle) {
-
-        }
-
-        @Override
-        public void onConnectionSuspended(int i) {
-
-        }
-
-        @Override
-        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        //start google api client
+        mGoogleApiClient.connect();
 
     }
 
+    //when Main Activity is stopped
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
 
-    //render path from current location to destination
+        //disconnect google api client
+        if(mGoogleApiClient.isConnected()) mGoogleApiClient.disconnect();
+
+        //stop location requests
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+    }
+
+
+    //...Google API Methods ...
+    @Override
+    public void onConnected(@Nullable Bundle bundle)
+    {
+        Log.i("Google_API", "Connection to API client successful");
+
+        //if connection to Google API client has been created, start listening for phones current location
+        if(HomeLocation == null)
+        {
+            LoadLocation();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {}
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { Log.e("Google_API", "Connecting to google API client has failed"); }
+    //...Google API Methods ...
+
+
+    public void onReloadButtonPressed(View view){
+        reFetchLocations();
+    }
+
+    //reload locations from json-location
+    private void reFetchLocations()
+    {
+        Log.i("JSON_LOADER", "Fetching JSON data from '" + jsonLocation + "'");
+
+        //create task for fetching the json data
+        JSONFetcher task = new JSONFetcher() {
+            @Override
+            protected void onPreExecute() {
+                infoText.setText("Loading json...");
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject object) {
+                try
+                {
+                    infoText.setText("Loading json has been completed!");
+                    locationArray = object.getJSONArray("Locations");
+                    reloadMarkers();
+                }
+                catch (JSONException ex)
+                {
+
+                }
+            }
+        };
+
+        //execute created task
+        task.execute(jsonLocation);
+    }
+
+    //render path from current location to destination. startPoint can be used to render path between two separate location (not phones current location)
     private void renderDirections(LatLng startPoint, final LatLng destination){
 
-
+        //get coordinates from Location variable
         LatLng homeCoordinates = null;
 
         if(startPoint == null)
@@ -162,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             homeCoordinates = new LatLng(HomeLocation.getLatitude(), HomeLocation.getLongitude());
         }
         else if(HomeLocation == null){
-            Toast.makeText(this, "Phone location unavailable", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Phone's current location is unavailable", Toast.LENGTH_SHORT).show();
             return;
         }
         else
@@ -179,13 +245,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     new URL("https://maps.googleapis.com/maps/api/directions/json?origin=" + homeCoordinates.latitude + "," + homeCoordinates.longitude +
                             "&destination=" + destCoordinates.latitude + "," + destCoordinates.longitude + "&key=" + APIKEY);
 
-
+            //task to fetch directions
             JSONFetcher task = new JSONFetcher() {
                 @Override
                 protected void onPreExecute() {
                     Log.i("Destination_info", "Fetching Destination starts");
-                    map.clear();
-                    reloadMarkers();
                 }
 
                 @Override
@@ -195,7 +259,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     try
                     {
+                        //remove currently rendered path for the new one
+                        if(currentPath != null) {
+                            currentPath.remove();
+                        }
 
+                        //get direction generation status
                         String item  = response.getString("status");
 
                         //Directions could not be generated for the two markers
@@ -215,16 +284,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         //fetching directions was successfull
                         else
                         {
-                            Log.i("Successfull Directions", "Fetching JSON directions has succeeded");
+                            Log.i("Successful Directions", "Fetching JSON directions has succeeded");
                             infoText.setText("Directions have been generated");
 
+                            //from the response fetch directions steps
                             JSONArray routes = response.getJSONArray("routes");
                             JSONArray legs = routes.getJSONObject(0).getJSONArray("legs");
                             JSONArray steps = legs.getJSONObject(0).getJSONArray("steps");
 
 
-                            PolylineOptions options = new PolylineOptions();
+                            currentPathOptions = new PolylineOptions();
 
+                            //go through steps and add them to PolylineOptions
                             for(int i = 0; i < steps.length(); i++)
                             {
                                 JSONObject start = steps.getJSONObject(i).getJSONObject("start_location");
@@ -235,24 +306,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 LatLng homeLatLng = new LatLng(HomeLocation.getLatitude(), HomeLocation.getLongitude());
 
-
-                                /*
-                                    Do not draw a staright line through current location and destination
-                                 */
-
-                                if(startLatLng.equals(destination) && endLatLng.equals(homeLatLng))
-                                {   }
-                                else if(startLatLng.equals(homeLatLng) && endLatLng.equals(destination))
-                                {   }
-                                else
-                                {
-                                    options.add(startLatLng, endLatLng);
-                                }
+                                currentPathOptions.add(startLatLng, endLatLng);
                             }
 
-                            //options.addAll(list);
-                            map.addPolyline(options);
-
+                            //add the created polyline to the map
+                            currentPath = map.addPolyline(currentPathOptions);
                         }
 
                     }
@@ -265,22 +323,36 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             };
 
+            //execute task
             task.execute(destinationURL.toString());
         }
-        catch (MalformedURLException e)
-        {
-
-        }
-
+        catch (MalformedURLException e) {   }
     }
 
+
+    //reload the existing markers to the map
     private void reloadMarkers()
     {
+        //clear existing markers
+        map.clear();
+
+        //add loaded location markers
         addMarkers(locationArray);
-        SelfLocator();
+
+        //create homelocation marker
+        if(HomeLocation != null){
+            map.addMarker(new MarkerOptions()
+                    .position(new LatLng(HomeLocation.getLatitude(), HomeLocation.getLongitude()))
+                    .title("Self Location")
+                    .snippet("Lat: " + HomeLocation.getLatitude() + " Long: " + HomeLocation.getLongitude())
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
+            );
+
+        }
     }
 
-    //when map creation is complited --> generate listerners
+
+    //when map creation is completed --> generate listeners
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -293,9 +365,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 String msg = "Marker: " + marker.getTitle() + " has been pressed!";
                 Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 
-                /*
-                When marker has been clicked, render directions from phone location to destination.
-                 */
+                // When marker has been clicked, render directions from phone location to destination.
 
                 LatLng markerPosition = marker.getPosition();
                 LatLng homePosition = new LatLng(HomeLocation.getLatitude(), HomeLocation.getLongitude());
@@ -304,6 +374,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Destination = marker.getPosition();
                     renderDirections(null, Destination);
                 }
+                else
+                {
+                    infoText.setText("This is where you should be.");
+                }
+
                 return false;
             }
         });
@@ -325,17 +400,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void addMarkers(JSONArray locations)
     {
 
-        //is map loaded?
-        if(map == null)
-        {
-            //if map is not loaded then execute this method again when map is loaded
-        }
+        //is map loaded? If map is not loaded then execute this method again when map is loaded.
+        if(map == null) {  return;  }
 
         //map is loaded
         else
         {
-            //Has information been found?
-            if (locations != null) {
+            //Has location information been found?
+            if (locations != null)
+            {
                 try
                 {
                     map.clear();
@@ -349,6 +422,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         map.addMarker(new MarkerOptions()
                                 .position(new LatLng(item.getDouble("Latitude"), item.getDouble("Longitude")))
                                 .title(item.getString("Title"))
+                                .snippet(item.getString("Description"))
                         );
                     }
 
@@ -365,12 +439,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    //check permissions for fine_location and continue
+    //check permissions for fine_location and continue to LoadLocation
     private void SelfLocator() {
 
-        /*
-            SelfLocator --> wait for onRequestPermissionResults -->  LoadLocation --> ReceiveSelfLocation
-         */
+        //SelfLocator --> wait for onRequestPermissionResults -->  LoadLocation
 
         int checkPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
 
@@ -384,7 +456,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //if permission has been granted
         else
         {
-            //get phone location
             LoadLocation();
         }
     }
@@ -392,89 +463,83 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //when request permission is handled
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == permissionTag){
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                LoadLocation();
-            }
-            else {
-                Log.e("PERMISSION_FAILURE", "Permission is denied");
-            }
-        }
-    }
 
-    //when gps returns phone location
-    private void receiveSelfLocation(Location resultLocation){
-        if(resultLocation == null)
-        {
-            Log.e("Location_ERROR", "Self location was null");
-        }
-        else
-        {
+        switch(requestCode) {
+            case permissionTag:
 
-            HomeLocation = resultLocation;
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    LoadLocation();
+                }
+                else {
+                    Log.e("PERMISSION_FAILURE", "Permission is denied by user");
+                }
 
-            map.addMarker(new MarkerOptions()
-                    .position(new LatLng(resultLocation.getLatitude(), resultLocation.getLongitude()))
-                    .title("Self Location")
-                    .snippet("Lat: " + resultLocation.getLatitude() + " Long: " + resultLocation.getLongitude())
-                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
-            );
+            break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         }
     }
 
-    //read location data from gps
-    private void LoadLocation(){
-        int checkPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
+    //start reading location from gps and setup initial home marker
+    private void LoadLocation()
+    {
 
-        //if no permission for fine_location
-        if(checkPermission != PackageManager.PERMISSION_GRANTED)
-        {
-            //ask for permission
-            android.support.v4.app.ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, permissionTag);
+            LocationRequest request = LocationRequest.create();
+            request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            request.setInterval(1000);
 
-        }
+            int hasLocationPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
 
-        //if permission is granted for fine_location
-        else
-        {
+            if(!mGoogleApiClient.isConnecting()) {
+                if (hasLocationPermission == PackageManager.PERMISSION_GRANTED) {
 
-            //get last known location
-            providerClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>()
-                    {
-                        //when reading last location is successfull
-                        @Override
-                        public void onSuccess(Location location)
-                        {
-                            if(location != null)
+                    //set listerner for location
+                    LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, request, this);
+
+                    //fetch and show current location
+                    LocationServices.getFusedLocationProviderClient(this).getLastLocation()
+                            .addOnSuccessListener(this, new OnSuccessListener<Location>()
                             {
-                                Log.i("Location_INFO", "Location test: " + location.getLatitude() + " ; " + location.getLongitude());
+                                //when reading last location is successful
+                                @Override
+                                public void onSuccess(Location location)
+                                {
+                                    //set initial homelocaiton
+                                    HomeLocation = location;
 
-                                //send fetched location information to handler method
-                                receiveSelfLocation(location);
-                            }
-                            else
+                                    //add home marker
+                                    map.addMarker(new MarkerOptions()
+                                            .position(new LatLng(HomeLocation.getLatitude(), HomeLocation.getLongitude()))
+                                            .title("Self Location")
+                                            .snippet("Lat: " + HomeLocation.getLatitude() + " Long: " + HomeLocation.getLongitude())
+                                            .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
+                                    );
+                                }
+                            })
+
+                            //when reading last location has failed
+                            .addOnFailureListener(this, new OnFailureListener()
                             {
-                                Log.e("Location_ERROR", "Location was empty?");
-                            }
-                        }
-                    })
+                                @Override
+                                public void onFailure(@NonNull Exception e)
+                                {
+                                    Log.e("Location_ERROR", "Reading location has failed");
+                                    Log.e("Location_ERROR", e.getMessage());
+                                }
+                            });
+                }
+            }
+    }
 
-                    //when reading last location has failed
-                    .addOnFailureListener(this, new OnFailureListener()
-                    {
-                        @Override
-                        public void onFailure(@NonNull Exception e)
-                        {
-                            Log.e("Location_ERROR", "Reading location has failed");
-                            Log.e("Location_ERROR", e.getMessage());
-                        }
-                    });
+    //when phone has been moved
+    @Override
+    public void onLocationChanged(Location location) {
+        HomeLocation = location;
+        reloadMarkers();
 
-        }
+    }
+
 }
-
-} //end of MainActivity class
 
 
