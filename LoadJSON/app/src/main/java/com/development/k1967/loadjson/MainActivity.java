@@ -21,12 +21,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Response;
 import com.google.android.gms.drive.events.ChangeListener;
 import com.google.android.gms.location.FusedLocationProviderApi;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -481,6 +480,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+
+
     //start reading location from gps and setup initial home marker
     private void LoadLocation()
     {
@@ -491,14 +492,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             int hasLocationPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
 
-            if(!mGoogleApiClient.isConnecting()) {
+            if(mGoogleApiClient.isConnected()) {
                 if (hasLocationPermission == PackageManager.PERMISSION_GRANTED) {
 
                     //set listerner for location
                     LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, request, this);
 
                     //fetch and show current location
-                    LocationServices.getFusedLocationProviderClient(this).getLastLocation()
+                    HomeLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+                    /*
                             .addOnSuccessListener(this, new OnSuccessListener<Location>()
                             {
                                 //when reading last location is successful
@@ -528,6 +531,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     Log.e("Location_ERROR", e.getMessage());
                                 }
                             });
+                }
+                */
                 }
             }
     }
