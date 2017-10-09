@@ -22,4 +22,4 @@ Tämä wiki on JAMK:in "Android Application Development" kurssin tehtävien pala
 | 41 | [GolfCourseApplication](https://github.com/Gitvalt/androidDevelopment/wiki/Exercise-Golf-Course-Wish-List) |
 
 
-[Android Development Research Assigment: Bluetooth]()
+[Android Development Research Assigment: Bluetooth](https://github.com/Gitvalt/androidDevResearchProject)
